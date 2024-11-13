@@ -48,20 +48,15 @@ class DataProcessor:
 
     @staticmethod
     def write_metrics_to_db(df: pd.DataFrame) -> bool:
-        """
-        Write stock metrics DataFrame to database.
-        Separate method optimized for stock metrics table.
-        """
+        """Write stock metrics DataFrame to database."""
         engine = DatabaseConnection.connect_to_db()
         if engine is None:
             return False
         
         try:
-            # Add ticker column if not present
             if 'ticker' not in df.columns and 'symbol' in df.columns:
                 df['ticker'] = df['symbol']
 
-            # Ensure we have the required columns
             if 'ticker' not in df.columns or 'report_date' not in df.columns:
                 print("Missing required columns 'ticker' or 'report_date'")
                 return False
@@ -103,7 +98,6 @@ class DataProcessor:
             for data_type in data_types:
                 print(f"Processing {data_type} for {ticker}")
                 
-                # Get data and table name
                 data = YahooFinanceService.get_company_data(company, data_type)
                 table_name = YahooFinanceService.get_table_name(data_type)
                 
@@ -111,13 +105,11 @@ class DataProcessor:
                     print(f"Skipping invalid data type: {data_type}")
                     continue
                 
-                # Get table columns
                 table_columns = DatabaseConnection.get_table_columns(engine, table_name)
                 if not table_columns:
                     print(f"Could not get columns for table {table_name}")
                     continue
                 
-                # Transform and write data
                 df = DataTransformer.transpose_data(ticker, data, table_columns)
                 success = DataProcessor.write_to_db(df, table_name=table_name)
                 

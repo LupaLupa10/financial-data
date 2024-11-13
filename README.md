@@ -6,7 +6,7 @@ A Python tool for collecting and storing financial data from Yahoo Finance.
 
 1. Clone the repository:
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/LupaLupa10/financial-data.git
 ```
 
 2. Navigate to the project directory:
